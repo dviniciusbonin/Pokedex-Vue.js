@@ -1,85 +1,89 @@
 <template>
-
   <div id="app">
-   
     <div class="column is-half is-offset-one-quarter">
-       <img class="img" src="https://img.ibxk.com.br/2019/09/30/30091641838086.jpg?w=1120&h=420&mode=crop&scale=both" alt="logo">
-       <hr>
-       <h2 class="is-size-2 is-flex is-justify-content-center">Pokedex</h2>
-  
-        <input id="input" class="input is-rounded is-info mb-4 ml-2 " type="text" placeholder="Buscar pokemon pelo nome" v-model="busca">
-       
-        <button id="button" class="button mb-2 ml-2 large-button is-success large-button" @click="filtrar">Buscar</button>
-        <div v-for="(poke, index) in filteredPokemons" :key="poke.url">
-          <Pokemon :name="poke.name" :url="poke.url" :num="index+1"/>
+      <img
+        class="img"
+        src="https://img.ibxk.com.br/2019/09/30/30091641838086.jpg?w=1120&h=420&mode=crop&scale=both"
+        alt="logo"
+      />
+      <hr />
+      <h2 class="is-size-2 is-flex is-justify-content-center">Pokedex</h2>
 
+      <input
+        id="input"
+        class="input is-rounded is-info mb-4 ml-2 "
+        type="text"
+        placeholder="Buscar pokemon pelo nome"
+        v-model="search"
+      />
+
+      <button
+        id="button"
+        class="button mb-2 ml-2 large-button is-success large-button"
+        @click="filter"
+      >
+        Buscar
+      </button>
+      <div v-for="(poke, index) in filteredPokemons" :key="poke.url">
+        <Pokemon :name="poke.name" :url="poke.url" :num="index + 1" />
       </div>
-
     </div>
-    
-   
   </div>
 </template>
 
 <script>
-
-import axios from 'axios'
-import Pokemon from './components/Pokemon'
-
+import axios from "axios";
+import Pokemon from "./components/Pokemon";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Pokemon
+    Pokemon,
   },
   data() {
     return {
       pokemons: [],
       filteredPokemons: [],
-      busca: ''
-    }
+      search: "",
+    };
   },
-  created:function() {
-    axios.get('https://pokeapi.co/api/v2/pokemon?limit=152&offset=0').then(
-      resp => {
-       
-        this.pokemons = resp.data.results
-        this.filteredPokemons = resp.data.results
-      }
-    )
+  created: function() {
+    axios
+      .get("https://pokeapi.co/api/v2/pokemon?limit=152&offset=0")
+      .then((resp) => {
+        this.pokemons = resp.data.results;
+        this.filteredPokemons = resp.data.results;
+      });
   },
   methods: {
-    filtrar: function() {
-      this.filteredPokemons = this.pokemons
-      if(this.busca == '' || this.busca == ' ') {
-        this.filteredPokemons = this.pokemons
-      }else {
+    filter: function() {
+      this.filteredPokemons = this.pokemons;
+      if (this.search == "" || this.search == " ") {
+        this.filteredPokemons = this.pokemons;
+      } else {
         this.filteredPokemons = this.pokemons.filter(
-          pokemon => pokemon.name == this.busca
-        )
-        
+          (pokemon) => pokemon.name == this.search.toLowerCase()
+        );
       }
-
-
-    }
+    },
   },
   computed: {
-    resultadoBusca: function() {
-      if(this.busca == '' || this.busca == ' ') {
-        return this.pokemons
-      }else {
-        return this.pokemons.filter(pokemon => pokemon.name == this.busca)
+    resultSearch: function() {
+      if (this.search == "" || this.search == " ") {
+        return this.pokemons;
+      } else {
+        return this.pokemons.filter(
+          (pokemon) => pokemon.name == this.search.toLowerCase()
+        );
       }
-    }
-  }
-}
- 
+    },
+  },
+};
 </script>
 
 <style>
 #input {
   width: 70%;
-
 }
 
 #button {
@@ -89,5 +93,4 @@ export default {
 .img {
   border-radius: 2em;
 }
-
 </style>
